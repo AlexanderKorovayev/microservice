@@ -42,6 +42,7 @@ func (repo *Repository) Create(consignment *pb.Consignment) (*pb.Consignment, er
 // to give you a better idea.
 type service struct {
 	repo repository
+	pb.UnimplementedShippingServiceServer
 }
 
 // CreateConsignment - we created just one method on our service,
@@ -74,7 +75,7 @@ func main() {
 	// Register our service with the gRPC server, this will tie our
 	// implementation into the auto-generated interface code for our
 	// protobuf definition.
-	pb.RegisterShippingServiceServer(s, &service{repo})
+	pb.RegisterShippingServiceServer(s, &service{repo, pb.UnimplementedShippingServiceServer{}})
 
 	// Register reflection service on gRPC server.
 	reflection.Register(s)
