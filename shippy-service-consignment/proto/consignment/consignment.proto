@@ -1,7 +1,7 @@
 // shippy-service-consignment/proto/consignment/consignment.proto
 syntax = "proto3";
 
-option go_package = "shippy/shippy-service-consignment/proto/consignment";
+option go_package = "microservice/shippy-service-consignment/proto/consignment";
 
 package consignment; 
 
