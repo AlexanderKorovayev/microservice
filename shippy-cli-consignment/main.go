@@ -2,12 +2,13 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
-
-	"context"
+	"reflect"
 
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-consignment/proto/consignment"
 	"google.golang.org/grpc"
@@ -37,6 +38,12 @@ func main() {
 	defer conn.Close()
 	client := pb.NewShippingServiceClient(conn)
 
+	fooType := reflect.TypeOf(client)
+	for i := 0; i < fooType.NumMethod(); i++ {
+		method := fooType.Method(i)
+		fmt.Println(method.Name)
+	}
+
 	// Contact the server and print out its response.
 	file := defaultFilename
 	if len(os.Args) > 1 {
@@ -54,4 +61,13 @@ func main() {
 		log.Fatalf("Could not greet: %v", err)
 	}
 	log.Printf("Created: %t", r.Created)
+	/*
+		getAll, err := client.GetConsignments(context.Background(), &pb.GetRequest{})
+		if err != nil {
+			log.Fatalf("Could not list consignments: %v", err)
+		}
+		for _, v := range getAll.Consignments {
+			log.Println(v)
+		}
+	*/
 }
