@@ -2,6 +2,8 @@ module github.com/AlexanderKorovayev/microservice/shippy-cli-consignment
 
 go 1.16
 
+replace github.com/AlexanderKorovayev/microservice/shippy-service-consignment => ../shippy-service-consignment
+
 require (
 	github.com/AlexanderKorovayev/microservice/shippy-service-consignment v0.0.0-20210610150148-174729434b99
 	golang.org/x/net v0.0.0-20210610132358-84b48f89b13b // indirect
