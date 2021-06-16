@@ -3,11 +3,16 @@ package main
 import (
 	"context"
 	"log"
+	"net"
 	"sync"
 
 	// Import the generated protobuf code
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-consignment/proto/consignment"
-	micro "github.com/micro/go-micro/v2"
+	"google.golang.org/grpc"
+)
+
+const (
+	port = ":50051"
 )
 
 type repository interface {
@@ -40,7 +45,7 @@ func (repo *Repository) GetAll() []*pb.Consignment {
 // we defined in our protobuf definition. You can check the interface
 // in the generated code itself for the exact method signatures etc
 // to give you a better idea.
-type consignmentService struct {
+type service struct {
 	repo repository
 	pb.UnimplementedShippingServiceServer
 }
@@ -48,7 +53,7 @@ type consignmentService struct {
 // CreateConsignment - we created just one method on our service,
 // which is a create method, which takes a context and a request as an
 // argument, these are handled by the gRPC server.
-func (s *consignmentService) CreateConsignment(ctx context.Context, req *pb.Consignment, res *pb.Response) (*pb.Response, error) {
+func (s *service) CreateConsignment(ctx context.Context, req *pb.Consignment) (*pb.Response, error) {
 
 	// Save our consignment
 	consignment, err := s.repo.Create(req)
@@ -58,42 +63,33 @@ func (s *consignmentService) CreateConsignment(ctx context.Context, req *pb.Cons
 
 	// Return matching the `Response` message we created in our
 	// protobuf definition.
-	res.Created = true
-	res.Consignment = consignment
-	return nil
+	return &pb.Response{Created: true, Consignment: consignment}, nil
 }
 
 // GetConsignments -
-func (s *consignmentService) GetConsignments(ctx context.Context, req *pb.GetRequest, res *pb.Response) (*pb.Response, error) {
+func (s *service) GetConsignments(ctx context.Context, req *pb.GetRequest) (*pb.Response, error) {
 	consignments := s.repo.GetAll()
-	res.Consignments = consignments
-	return nil
+	return &pb.Response{Consignments: consignments}, nil
 }
 
 func main() {
 
 	repo := &Repository{}
 
-	// Create a new service. Optionally include some options here.
-	service := micro.NewService(
-
-		// This name must match the package name given in your protobuf definition
-		micro.Name("shippy.service.consignment"),
-	)
-
-	// Init will parse the command line flags.
-	service.Init()
+	// Set-up our gRPC server.
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	s := grpc.NewServer()
 
 	// Register our service with the gRPC server, this will tie our
 	// implementation into the auto-generated interface code for our
 	// protobuf definition.
-	if err := pb.RegisterShippingServiceServer(service.Server(),
-		&consignmentService{repo, pb.UnimplementedShippingServiceServer{}}); err != nil {
-		log.Panic(err)
-	}
+	pb.RegisterShippingServiceServer(s, &service{repo, pb.UnimplementedShippingServiceServer{}})
 
-	// Run the server
-	if err := service.Run(); err != nil {
-		log.Panic(err)
+	log.Println("Running on port:", port)
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
 }
