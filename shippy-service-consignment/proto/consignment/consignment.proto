@@ -3,7 +3,7 @@ syntax = "proto3";
 
 option go_package = "github.com/AlexanderKorovayev/microservice/shippy-service-consignment/proto/consignment";
 
-package consignment; 
+package consignment;
 
 service ShippingService {
   rpc CreateConsignment(Consignment) returns (Response) {}
