@@ -17,12 +17,13 @@ const (
 
 type repository interface {
 	FindAvailable(*pb.Specification) (*pb.Vessel, error)
+	GetAll() []*pb.Vessel
 }
 
 // Repository - Dummy repository, this simulates the use of a datastore
 // of some kind. We'll replace this with a real implementation later on.
 type VesselRepository struct {
-	vessels []*pb.Vesselt
+	vessels []*pb.Vessel
 }
 
 // Create a new consignment
@@ -35,13 +36,17 @@ func (repo *VesselRepository) FindAvailable(spec *pb.Specification) (*pb.Vessel,
 	return nil, errors.New("No vessel found by that spec")
 }
 
+func (repo *VesselRepository) GetAll() []*pb.Vessel {
+	return repo.vessels
+}
+
 // Service should implement all of the methods to satisfy the service
 // we defined in our protobuf definition. You can check the interface
 // in the generated code itself for the exact method signatures etc
 // to give you a better idea.
 type vesselService struct {
 	repo repository
-	pb.UnimplementedShippingServiceServer
+	pb.UnimplementedVesselServiceServer
 }
 
 func (s *vesselService) FindAvailable(ctx context.Context, req *pb.Specification) (*pb.Response, error) {
@@ -51,9 +56,9 @@ func (s *vesselService) FindAvailable(ctx context.Context, req *pb.Specification
 	if err != nil {
 		return nil, err
 	}
-
+	vessels := s.repo.GetAll()
 	// Set the vessel as part of the response message type
-	return &pb.Response{Created: true, Vessel: vessel}, nil
+	return &pb.Response{Vessel: vessel, Vessels: vessels}, nil
 }
 
 func main() {
@@ -74,7 +79,7 @@ func main() {
 	// Register our service with the gRPC server, this will tie our
 	// implementation into the auto-generated interface code for our
 	// protobuf definition.
-	pb.RegisterShippingServiceServer(s, &vesselService{repo, pb.UnimplementedShippingServiceServer{}})
+	pb.RegisterVesselServiceServer(s, &vesselService{repo, pb.UnimplementedVesselServiceServer{}})
 
 	log.Println("Running on port:", port)
 	if err := s.Serve(lis); err != nil {
