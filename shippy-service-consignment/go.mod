@@ -2,7 +2,7 @@ module github.com/AlexanderKorovayev/microservice/shippy-service-consignment
 
 go 1.15
 
-replace github.com/AlexanderKorovayev/microservice/shippy-service-consignment => ../shippy-service-consignment
+//replace github.com/AlexanderKorovayev/microservice/shippy-service-consignment => ../shippy-service-consignment
 
 require (
 	github.com/AlexanderKorovayev/microservice/shippy-service-vessel v0.0.0-20210618065347-cad2d2718daa // indirect
