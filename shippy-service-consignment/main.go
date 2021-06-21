@@ -8,11 +8,13 @@ import (
 
 	// Import the generated protobuf code
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-consignment/proto/consignment"
+	vesselProto "github.com/AlexanderKorovayev/microservice/shippy-service-vessel/proto/vessel"
 	"google.golang.org/grpc"
 )
 
 const (
-	port = ":50051"
+	port          = ":50051"
+	vesselAddress = "localhost:50052" //"host.docker.internal:50051"
 )
 
 type repository interface {
@@ -20,14 +22,15 @@ type repository interface {
 	GetAll() []*pb.Consignment
 }
 
-// Repository - Dummy repository, this simulates the use of a datastore
+// ConsignmentRepository - Dummy repository, this simulates the use of a datastore
 // of some kind. We'll replace this with a real implementation later on.
-type Repository struct {
+type ConsignmentRepository struct {
 	mu           sync.RWMutex
 	consignments []*pb.Consignment
 }
 
-func (repo *Repository) Create(consignment *pb.Consignment) (*pb.Consignment, error) {
+//Create create consignment
+func (repo *ConsignmentRepository) Create(consignment *pb.Consignment) (*pb.Consignment, error) {
 	repo.mu.Lock()
 	updated := append(repo.consignments, consignment)
 	repo.consignments = updated
@@ -35,7 +38,8 @@ func (repo *Repository) Create(consignment *pb.Consignment) (*pb.Consignment, er
 	return consignment, nil
 }
 
-func (repo *Repository) GetAll() []*pb.Consignment {
+//GetAll get consignments
+func (repo *ConsignmentRepository) GetAll() []*pb.Consignment {
 	return repo.consignments
 }
 
@@ -44,11 +48,28 @@ func (repo *Repository) GetAll() []*pb.Consignment {
 // in the generated code itself for the exact method signatures etc
 // to give you a better idea.
 type service struct {
-	repo repository
+	repo         repository
+	vesselClient vesselProto.VesselServiceClient
 	pb.UnimplementedShippingServiceServer
 }
 
 func (s *service) CreateConsignment(ctx context.Context, req *pb.Consignment) (*pb.Response, error) {
+
+	// Here we call a client instance of our vessel service with our consignment weight,
+	// and the amount of containers as the capacity value
+	vesselResponse, err := s.vesselClient.FindAvailable(context.Background(), &vesselProto.Specification{
+		MaxWeight: req.Weight,
+		Capacity:  int32(len(req.Containers)),
+	})
+	log.Printf("Found vessel: %s \n", vesselResponse.Vessel.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	// We set the VesselId as the vessel we got back from our
+	// vessel service
+	req.VesselId = vesselResponse.Vessel.Id
+
 	// Save our consignment
 	consignment, err := s.repo.Create(req)
 	if err != nil {
@@ -66,7 +87,7 @@ func (s *service) GetConsignments(ctx context.Context, req *pb.GetRequest) (*pb.
 
 func main() {
 
-	repo := &Repository{}
+	repo := &ConsignmentRepository{}
 
 	// Set-up our gRPC server.
 	lis, err := net.Listen("tcp", port)
@@ -75,10 +96,19 @@ func main() {
 	}
 	s := grpc.NewServer()
 
+	// Set up a connection to the vessel server.
+	conn, err := grpc.Dial(vesselAddress, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Did not connect: %v", err)
+	}
+	defer conn.Close()
+
+	vesselClient := vesselProto.NewVesselServiceClient(conn)
+
 	// Register our service with the gRPC server, this will tie our
 	// implementation into the auto-generated interface code for our
 	// protobuf definition.
-	pb.RegisterShippingServiceServer(s, &service{repo, pb.UnimplementedShippingServiceServer{}})
+	pb.RegisterShippingServiceServer(s, &service{repo, vesselClient, pb.UnimplementedShippingServiceServer{}})
 
 	log.Println("Running on port:", port)
 	if err := s.Serve(lis); err != nil {
