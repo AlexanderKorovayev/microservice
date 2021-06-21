@@ -42,12 +42,12 @@ func (repo *VesselRepository) GetAll() []*pb.Vessel {
 }
 
 // Our grpc service handler
-type service struct {
+type vesselService struct {
 	repo Repository
 	pb.UnimplementedVesselServiceServer
 }
 
-func (s *service) FindAvailable(ctx context.Context, req *pb.Specification) (*pb.Response, error) {
+func (s *vesselService) FindAvailable(ctx context.Context, req *pb.Specification) (*pb.Response, error) {
 
 	// Find the next available vessel
 	vessel, err := s.repo.FindAvailable(req)
@@ -76,7 +76,7 @@ func main() {
 	// Register our service with the gRPC server, this will tie our
 	// implementation into the auto-generated interface code for our
 	// protobuf definition.
-	pb.RegisterVesselServiceServer(s, &service{repo, pb.UnimplementedVesselServiceServer{}})
+	pb.RegisterVesselServiceServer(s, &vesselService{repo, pb.UnimplementedVesselServiceServer{}})
 
 	log.Println("Running on port:", port)
 	if err := s.Serve(lis); err != nil {
