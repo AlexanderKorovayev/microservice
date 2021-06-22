@@ -1,6 +1,8 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/AlexanderKorovayev/microservice/shippy-service-vessel v0.0.0-20210618065347-cad2d2718daa h1:+gwDL1iL2MlGE0OgT2neFkwXTrMh0bX/7D80mpCt+LI=
 github.com/AlexanderKorovayev/microservice/shippy-service-vessel v0.0.0-20210618065347-cad2d2718daa/go.mod h1:Xyc7PfHKrxXPyvYLMQpQ9gYMgtoTbGydXN7VqHSR/NQ=
+github.com/AlexanderKorovayev/microservice/shippy-service-vessel v0.0.0-20210622061245-7198ff2709c9 h1:+4KmcQB2k/8yR+8smsnvhYkL+hacxBfOh41jU+igWZ8=
+github.com/AlexanderKorovayev/microservice/shippy-service-vessel v0.0.0-20210622061245-7198ff2709c9/go.mod h1:Xyc7PfHKrxXPyvYLMQpQ9gYMgtoTbGydXN7VqHSR/NQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
@@ -105,6 +107,8 @@ google.golang.org/genproto v0.0.0-20210608205507-b6d2f5bf0d7d h1:KzwjikDymrEmYYb
 google.golang.org/genproto v0.0.0-20210608205507-b6d2f5bf0d7d/go.mod h1:UODoCrxHCcBojKKwX1terBiRUaqAsFqJiF615XL43r0=
 google.golang.org/genproto v0.0.0-20210614182748-5b3b54cad159 h1:7TIh9IZzwv/Gxqf+uYm45KzZTG1BlkZzb3yOa9GqgVE=
 google.golang.org/genproto v0.0.0-20210614182748-5b3b54cad159/go.mod h1:SzzZ/N+nwJDaO1kznhnlzqS8ocJICar6hYhVyhi++24=
+google.golang.org/genproto v0.0.0-20210617175327-b9e0b3197ced h1:c5geK1iMU3cDKtFrCVQIcjR3W+JOZMuhIyICMCTbtus=
+google.golang.org/genproto v0.0.0-20210617175327-b9e0b3197ced/go.mod h1:SzzZ/N+nwJDaO1kznhnlzqS8ocJICar6hYhVyhi++24=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.23.0/go.mod h1:Y5yQAOtifL1yxbo5wqy6BxZv8vAUGQwXBOALyacEbxg=
 google.golang.org/grpc v1.25.1/go.mod h1:c3i+UQWmh7LiEpx4sFZnkU36qjEYZ0imhYfXVyQciAY=

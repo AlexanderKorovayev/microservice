@@ -14,7 +14,7 @@ import (
 
 const (
 	port          = ":50051"
-	vesselAddress = "host.docker.internal:50052" //"host.docker.internal:50051"
+	vesselAddress = "host.docker.internal:50052" //"host.docker.internal:50052"
 )
 
 type repository interface {
