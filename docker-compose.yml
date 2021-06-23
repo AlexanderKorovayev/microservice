@@ -14,6 +14,8 @@ services:
       - 50051:50051
     environment:
       DB_HOST: "mongodb://datastore:27017"
+    networks:
+      - my_network
 
   vessel:
     restart: always
@@ -22,10 +24,14 @@ services:
       - 50052:50052
     environment:
       DB_HOST: "mongodb://datastore:27017"
+    networks:
+      - my_network
 
   # Commands
   cli:
     build: ./shippy-cli-consignment
+    networks:
+      - my_network
 
   # Database tier
   datastore:
@@ -39,3 +45,7 @@ services:
     ports:
       - 27017
     command: mongod --logpath=/dev/null
+  
+networks:
+  my_network:
+    driver: bridge
