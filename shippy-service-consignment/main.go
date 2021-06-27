@@ -51,12 +51,10 @@ func main() {
 
 	vesselClient := vesselProto.NewVesselServiceClient(conn)
 
-	h := &handler{repository, vesselClient}
-
 	// Register our service with the gRPC server, this will tie our
 	// implementation into the auto-generated interface code for our
 	// protobuf definition.
-	pb.RegisterShippingServiceServer(s, &service{repository, vesselClient, pb.UnimplementedShippingServiceServer{}})
+	pb.RegisterShippingServiceServer(s, &handler{repository, vesselClient, pb.UnimplementedShippingServiceServer{}})
 
 	log.Println("Running on port:", port)
 	if err := s.Serve(lis); err != nil {
