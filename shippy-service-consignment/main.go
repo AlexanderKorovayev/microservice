@@ -7,8 +7,8 @@ import (
 	"os"
 
 	// Import the generated protobuf code
+	core "github.com/AlexanderKorovayev/microservice/shippy-service-consignment/core"
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-consignment/proto/consignment"
-	core "github.com/AlexanderKorovayev/microservice/shippy-service-vessel/core"
 	vesselProto "github.com/AlexanderKorovayev/microservice/shippy-service-vessel/proto/vessel"
 	"google.golang.org/grpc"
 )

@@ -38,10 +38,8 @@ func (s *handler) CreateConsignment(ctx context.Context, req *pb.Consignment) (*
 
 	// Save our consignment
 	//consignment, err := s.repo.Create(req) возможно это рабочий варинат
-	consignment, err := s.repository.Create(ctx, MarshalConsignment(req))
-	if err != nil {
-		return nil, err
-	}
+	consignment := s.repository.Create(ctx, MarshalConsignment(req))
+
 	// Return matching the `Response` message we created in our
 	// protobuf definition.
 	return &pb.Response{Created: true, Consignment: consignment}, nil
@@ -50,7 +48,7 @@ func (s *handler) CreateConsignment(ctx context.Context, req *pb.Consignment) (*
 func (s *handler) GetConsignments(ctx context.Context, req *pb.GetRequest) (*pb.Response, error) {
 	consignments, err := s.repository.GetAll(ctx)
 	if err != nil {
-		return err
+		return err, nil
 	}
 	return &pb.Response{Consignments: UnmarshalConsignmentCollection(consignments)}, nil
 }
