@@ -1,5 +1,5 @@
 // shippy-service-consignment/repository.go
-package main
+package core
 
 import (
 	"context"

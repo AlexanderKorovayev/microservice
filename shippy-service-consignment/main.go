@@ -8,6 +8,7 @@ import (
 
 	// Import the generated protobuf code
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-consignment/proto/consignment"
+	core "github.com/AlexanderKorovayev/microservice/shippy-service-vessel/core"
 	vesselProto "github.com/AlexanderKorovayev/microservice/shippy-service-vessel/proto/vessel"
 	"google.golang.org/grpc"
 )
@@ -39,7 +40,7 @@ func main() {
 		uri = defaultHost
 	}
 
-	client, err := CreateClient(context.Background(), uri, 0)
+	client, err := core.CreateClient(context.Background(), uri, 0)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -47,14 +48,14 @@ func main() {
 
 	consignmentCollection := client.Database("shippy").Collection("consignments")
 
-	repository := &MongoRepository{consignmentCollection}
+	repository := &core.MongoRepository{consignmentCollection}
 
 	vesselClient := vesselProto.NewVesselServiceClient(conn)
 
 	// Register our service with the gRPC server, this will tie our
 	// implementation into the auto-generated interface code for our
 	// protobuf definition.
-	pb.RegisterShippingServiceServer(s, &handler{repository, vesselClient, pb.UnimplementedShippingServiceServer{}})
+	pb.RegisterShippingServiceServer(s, &core.handler{repository, vesselClient, pb.UnimplementedShippingServiceServer{}})
 
 	log.Println("Running on port:", port)
 	if err := s.Serve(lis); err != nil {
