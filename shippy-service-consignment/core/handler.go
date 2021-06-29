@@ -10,16 +10,17 @@ import (
 	vesselProto "github.com/AlexanderKorovayev/microservice/shippy-service-vessel/proto/vessel"
 )
 
-type handler struct {
-	repository
-	vesselClient vesselProto.VesselService
+type Handler struct {
+	Repository
+	VesselClient vesselProto.VesselServiceClient
+	pb.UnimplementedShippingServiceServer
 }
 
-func (s *handler) CreateConsignment(ctx context.Context, req *pb.Consignment) (*pb.Response, error) {
+func (s *Handler) CreateConsignment(ctx context.Context, req *pb.Consignment) (*pb.Response, error) {
 
 	// Here we call a client instance of our vessel service with our consignment weight,
 	// and the amount of containers as the capacity value
-	vesselResponse, err := s.vesselClient.FindAvailable(context.Background(), &vesselProto.Specification{
+	vesselResponse, err := s.VesselClient.FindAvailable(context.Background(), &vesselProto.Specification{
 		MaxWeight: req.Weight,
 		Capacity:  int32(len(req.Containers)),
 	})
@@ -29,7 +30,7 @@ func (s *handler) CreateConsignment(ctx context.Context, req *pb.Consignment) (*
 	}
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// We set the VesselId as the vessel we got back from our
@@ -38,17 +39,21 @@ func (s *handler) CreateConsignment(ctx context.Context, req *pb.Consignment) (*
 
 	// Save our consignment
 	//consignment, err := s.repo.Create(req) возможно это рабочий варинат
-	consignment := s.repository.Create(ctx, MarshalConsignment(req))
+	err = s.Repository.Create(ctx, MarshalConsignment(req))
+
+	if err != nil {
+		return nil, err
+	}
 
 	// Return matching the `Response` message we created in our
 	// protobuf definition.
-	return &pb.Response{Created: true, Consignment: consignment}, nil
+	return &pb.Response{Created: true}, nil
 }
 
-func (s *handler) GetConsignments(ctx context.Context, req *pb.GetRequest) (*pb.Response, error) {
-	consignments, err := s.repository.GetAll(ctx)
+func (s *Handler) GetConsignments(ctx context.Context, req *pb.GetRequest) (*pb.Response, error) {
+	consignments, err := s.Repository.GetAll(ctx)
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 	return &pb.Response{Consignments: UnmarshalConsignmentCollection(consignments)}, nil
 }
