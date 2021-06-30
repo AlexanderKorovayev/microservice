@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"net"
-	"os"
 
 	// Import the generated protobuf code
 	core "github.com/AlexanderKorovayev/microservice/shippy-service-consignment/core"
@@ -14,7 +13,9 @@ import (
 )
 
 const (
-	defaultHost   = "datastore:27017"
+	//для локальной отладки вставил локал хост, но потом надо вернуть обратно
+	//mongodb://127.0.0.1:27017 datastore:27017
+	defaultHost   = "mongodb://127.0.0.1:27017"
 	port          = ":50051"
 	vesselAddress = "vessel:50052" //"host.docker.internal:50052"
 )
@@ -35,12 +36,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	uri := os.Getenv("DB_HOST")
-	if uri == "" {
-		uri = defaultHost
-	}
-
-	client, err := core.CreateClient(context.Background(), uri, 0)
+	client, err := core.CreateClient(context.Background(), defaultHost, 0)
 	if err != nil {
 		log.Panic(err)
 	}
