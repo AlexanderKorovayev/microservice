@@ -17,7 +17,7 @@ const (
 	//mongodb://127.0.0.1:27017 datastore:27017
 	defaultHost   = "mongodb://127.0.0.1:27017"
 	port          = ":50051"
-	vesselAddress = "vessel:50052" //"host.docker.internal:50052"
+	vesselAddress = "127.0.0.1:50052" //"host.docker.internal:50052" 127.0.0.1:50052 vessel:50052
 )
 
 func main() {

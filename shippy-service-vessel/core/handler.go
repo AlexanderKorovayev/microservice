@@ -2,32 +2,27 @@ package core
 
 import (
 	"context"
+
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-vessel/proto/vessel"
 )
 
-type handler struct {
-	repository
+type Handler struct {
+	Repository
+	pb.UnimplementedVesselServiceServer
 }
 
-
-func (s *handler) FindAvailable(ctx context.Context, req *pb.Specification, res *pb.Response) error {
-
+func (s *Handler) FindAvailable(ctx context.Context, req *pb.Specification) (*pb.Response, error) {
 	// Find the next available vessel
-	vessel, err := s.repository.FindAvailable(ctx, MarshalSpecification(req))
+	vessel, err := s.Repository.FindAvailable(ctx, MarshalSpecification(req))
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	// Set the vessel as part of the response message type
-	res.Vessel = UnmarshalVessel(vessel)
-	return nil
+	return &pb.Response{Vessel: UnmarshalVessel(vessel)}, nil
 }
 
-
-func (s *handler) Create(ctx context.Context, req *pb.Vessel, res *pb.Response) error {
-	if err := s.repository.Create(ctx, MarshalVessel(req)); err != nil {
-		return err
+func (s *Handler) Create(ctx context.Context, req *pb.Vessel) (*pb.Response, error) {
+	if err := s.Repository.Create(ctx, MarshalVessel(req)); err != nil {
+		return nil, err
 	}
-	res.Vessel = req
-	return nil
+	return &pb.Response{Created: true}, nil
 }

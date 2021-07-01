@@ -1,20 +1,21 @@
-package main
+package core
 
 import (
 	"context"
+	"log"
 
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-vessel/proto/vessel"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type repository interface {
+type Repository interface {
 	FindAvailable(ctx context.Context, spec *Specification) (*Vessel, error)
 	Create(ctx context.Context, vessel *Vessel) error
 }
 
 type MongoRepository struct {
-	collection *mongo.Collection
+	Collection *mongo.Collection
 }
 
 type Specification struct {
@@ -81,15 +82,17 @@ func (repository *MongoRepository) FindAvailable(ctx context.Context, spec *Spec
 			spec.MaxWeight,
 		}},
 	}}
-	vessel := &Vessel{}
-	if err := repository.collection.FindOne(ctx, filter).Decode(vessel); err != nil {
+	filter = bson.D{{"id", "vessel001"}}
+	var vessel Vessel
+	if err := repository.Collection.FindOne(ctx, filter).Decode(&vessel); err != nil {
 		return nil, err
 	}
-	return vessel, nil
+	log.Println(vessel)
+	return &vessel, nil
 }
 
 // Create a new vessel
 func (repository *MongoRepository) Create(ctx context.Context, vessel *Vessel) error {
-	_, err := repository.collection.InsertOne(ctx, vessel)
+	_, err := repository.Collection.InsertOne(ctx, *vessel)
 	return err
 }

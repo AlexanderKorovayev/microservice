@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	address         = "consignment:50051" //"host.docker.internal:50051"
+	address         = "127.0.0.1:50051" //"host.docker.internal:50051" 127.0.0.1:50051 consignment:50051
 	defaultFilename = "consignment.json"
 )
 
@@ -47,7 +47,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not parse file: %v", err)
 	}
-
 	r, err := client.CreateConsignment(context.Background(), consignment)
 	if err != nil {
 		log.Fatalf("Could not greet: %v", err)

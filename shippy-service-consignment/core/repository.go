@@ -3,9 +3,12 @@ package core
 
 import (
 	"context"
+	"log"
 
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-consignment/proto/consignment"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Consignment struct {
@@ -98,20 +101,47 @@ type MongoRepository struct {
 
 // Create -
 func (repository *MongoRepository) Create(ctx context.Context, consignment *Consignment) error {
-	_, err := repository.Collection.InsertOne(ctx, consignment)
+	_, err := repository.Collection.InsertOne(ctx, *consignment)
 	return err
 }
 
 // GetAll -
 func (repository *MongoRepository) GetAll(ctx context.Context) ([]*Consignment, error) {
-	cur, err := repository.Collection.Find(ctx, nil, nil)
+	options := options.Find()
+	options.SetLimit(2)
+	filter := bson.M{}
 	var consignments []*Consignment
+	cur, err := repository.Collection.Find(context.TODO(), filter, options)
+	if err != nil {
+		log.Fatal(err)
+	}
 	for cur.Next(ctx) {
-		var consignment *Consignment
+		log.Println("IN1")
+		var consignment Consignment
+
 		if err := cur.Decode(&consignment); err != nil {
 			return nil, err
 		}
-		consignments = append(consignments, consignment)
+		log.Println("IN2")
+		consignments = append(consignments, &consignment)
 	}
 	return consignments, err
+	/*
+		cur, err := repository.Collection.Find(ctx, nil, nil)
+		log.Println("IN")
+		log.Println(cur)
+		log.Println(err)
+		var consignments []*Consignment
+		for cur.Next(ctx) {
+			log.Println("IN1")
+			var consignment Consignment
+
+			if err := cur.Decode(&consignment); err != nil {
+				return nil, err
+			}
+			log.Println("IN2")
+			consignments = append(consignments, &consignment)
+		}
+		return consignments, err
+	*/
 }

@@ -24,7 +24,6 @@ func (s *Handler) CreateConsignment(ctx context.Context, req *pb.Consignment) (*
 		MaxWeight: req.Weight,
 		Capacity:  int32(len(req.Containers)),
 	})
-	log.Printf("Found vessel: %s \n", vesselResponse.Vessel.Name)
 	if vesselResponse == nil {
 		return nil, errors.New("error fetching vessel, returned nil")
 	}
@@ -33,18 +32,17 @@ func (s *Handler) CreateConsignment(ctx context.Context, req *pb.Consignment) (*
 		return nil, err
 	}
 
+	log.Printf("Found vessel: %s \n", vesselResponse.Vessel.Name)
+
 	// We set the VesselId as the vessel we got back from our
 	// vessel service
 	req.VesselId = vesselResponse.Vessel.Id
-
 	// Save our consignment
-	//consignment, err := s.repo.Create(req) возможно это рабочий варинат
+	log.Println(*req)
 	err = s.Repository.Create(ctx, MarshalConsignment(req))
-
 	if err != nil {
 		return nil, err
 	}
-
 	// Return matching the `Response` message we created in our
 	// protobuf definition.
 	return &pb.Response{Created: true}, nil
