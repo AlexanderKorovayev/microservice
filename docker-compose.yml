@@ -12,7 +12,11 @@
 #    Но на линуксе контейнеры не смогут найти друг друга, в таком случае нужно
 #    прописывать в конфиге compose блок networks, который позволяет обращаться
 #    к контейнеры в сети по его имени из compose. Например vessel:50052.
-
+# 3) Команда для генерации grpc кода 
+#    protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/consignment/consignment.proto
+#    protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/vessel/vessel.proto
+#    
+#
 version: '3.5'
 
 services:
