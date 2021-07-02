@@ -13,11 +13,9 @@ import (
 )
 
 const (
-	//для локальной отладки вставил локал хост, но потом надо вернуть обратно
-	//mongodb://127.0.0.1:27017 datastore:27017
-	defaultHost   = "mongodb://127.0.0.1:27017"
+	defaultHost   = "datastore:27017" //mongodb://127.0.0.1:27017 datastore:27017
 	port          = ":50051"
-	vesselAddress = "127.0.0.1:50052" //"host.docker.internal:50052" 127.0.0.1:50052 vessel:50052
+	vesselAddress = "vessel:50052" //"host.docker.internal:50052" 127.0.0.1:50052 vessel:50052
 )
 
 func main() {

@@ -108,40 +108,19 @@ func (repository *MongoRepository) Create(ctx context.Context, consignment *Cons
 // GetAll -
 func (repository *MongoRepository) GetAll(ctx context.Context) ([]*Consignment, error) {
 	options := options.Find()
-	options.SetLimit(2)
 	filter := bson.M{}
 	var consignments []*Consignment
 	cur, err := repository.Collection.Find(context.TODO(), filter, options)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer cur.Close(ctx)
 	for cur.Next(ctx) {
-		log.Println("IN1")
 		var consignment Consignment
-
 		if err := cur.Decode(&consignment); err != nil {
 			return nil, err
 		}
-		log.Println("IN2")
 		consignments = append(consignments, &consignment)
 	}
 	return consignments, err
-	/*
-		cur, err := repository.Collection.Find(ctx, nil, nil)
-		log.Println("IN")
-		log.Println(cur)
-		log.Println(err)
-		var consignments []*Consignment
-		for cur.Next(ctx) {
-			log.Println("IN1")
-			var consignment Consignment
-
-			if err := cur.Decode(&consignment); err != nil {
-				return nil, err
-			}
-			log.Println("IN2")
-			consignments = append(consignments, &consignment)
-		}
-		return consignments, err
-	*/
 }

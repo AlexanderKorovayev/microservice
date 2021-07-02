@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	address         = "127.0.0.1:50051" //"host.docker.internal:50051" 127.0.0.1:50051 consignment:50051
+	address         = "consignment:50051" //"host.docker.internal:50051" 127.0.0.1:50051 consignment:50051
 	defaultFilename = "consignment.json"
 )
 

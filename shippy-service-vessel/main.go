@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	defaultHost = "mongodb://127.0.0.1:27017"
+	defaultHost = "datastore:27017" //datastore:27017 mongodb://127.0.0.1:27017
 	port        = ":50052"
 )
 
@@ -43,27 +43,6 @@ func main() {
 	for _, v := range vessels {
 		repository.Create(context.TODO(), core.MarshalVessel(v))
 	}
-	/*
-		пробный поиск
-		type Trainer struct {
-			Name string
-			Age  int
-			City string
-		}
-		ash := Trainer{"Ash", 10, "Pallet Town"}
-		insertResult, err := vesselCollection.InsertOne(context.TODO(), ash)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println("Inserted a single document: ", insertResult.InsertedID)
-		filter := bson.D{{"name", "Ash"}}
-		var result Trainer
-		err = vesselCollection.FindOne(context.TODO(), filter).Decode(&result)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Printf("Found a single document: %+v\n", result)
-	*/
 
 	// Register our service with the gRPC server, this will tie our
 	// implementation into the auto-generated interface code for our

@@ -38,7 +38,6 @@ func (s *Handler) CreateConsignment(ctx context.Context, req *pb.Consignment) (*
 	// vessel service
 	req.VesselId = vesselResponse.Vessel.Id
 	// Save our consignment
-	log.Println(*req)
 	err = s.Repository.Create(ctx, MarshalConsignment(req))
 	if err != nil {
 		return nil, err
