@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	defaultHost = "datastore:27017" //datastore:27017 mongodb://127.0.0.1:27017
+	defaultHost = "mongodb://datastore:27017" //datastore:27017 mongodb://127.0.0.1:27017
 	port        = ":50052"
 )
 
