@@ -73,7 +73,26 @@ services:
     command: mongod --logpath=/dev/null
     networks:
       - my_network
+
+  user:
+    build: ./shippy-service-user
+    ports:
+      - 50053:50053
+    environment:
+      MICRO_ADDRESS: ":50053"
+    networks:
+      - my_network
   
+  database:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: "admin"
+    ports:
+      - 5432:5432
+    networks:
+      - my_network
+
 networks:
   my_network:
     driver: bridge
