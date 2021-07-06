@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"errors"
 
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-user/proto/user"
 	"golang.org/x/crypto/bcrypt"
@@ -13,82 +12,82 @@ type authable interface {
 	Encode(user *pb.User) (string, error)
 }
 
-type handler struct {
-	repository   Repository
-	tokenService authable
+type Handler struct {
+	repository Repository
+	//tokenService authable
 }
 
-func (s *handler) Get(ctx context.Context, req *pb.User, res *pb.Response) error {
+func (s *Handler) Get(ctx context.Context, req *pb.User) (*pb.Response, error) {
 	result, err := s.repository.Get(ctx, req.Id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	user := UnmarshalUser(result)
-	res.User = user
 
-	return nil
+	return &pb.Response{User: user}, nil
 }
 
-func (s *handler) GetAll(ctx context.Context, req *pb.Request, res *pb.Response) error {
+func (s *Handler) GetAll(ctx context.Context, req *pb.Request) (*pb.Response, error) {
 	results, err := s.repository.GetAll(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	users := UnmarshalUserCollection(results)
-	res.Users = users
 
-	return nil
+	return &pb.Response{Users: users}, nil
 }
 
-func (s *handler) Auth(ctx context.Context, req *pb.User, res *pb.Token) error {
+/*
+func (s *Handler) Auth(ctx context.Context, req *pb.User) (*pb.Token, error) {
 	user, err := s.repository.GetByEmail(ctx, req.Email)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		return err
+		return nil, err
 	}
 
 	token, err := s.tokenService.Encode(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	res.Token = token
-	return nil
+	return &pb.Token{Token: token}, nil
 }
+*/
 
-func (s *handler) Create(ctx context.Context, req *pb.User, res *pb.Response) error {
+func (s *Handler) Create(ctx context.Context, req *pb.User) (*pb.Response, error) {
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.Password = string(hashedPass)
 	if err := s.repository.Create(ctx, MarshalUser(req)); err != nil {
-		return err
+		return nil, err
 	}
 
 	// Strip the password back out, so's we're not returning it
 	req.Password = ""
 	res.User = req
 
-	return nil
+	return &pb.Response{User: req}, nil
 }
 
-func (s *handler) ValidateToken(ctx context.Context, req *pb.Token, res *pb.Token) error {
+/*
+func (s *Handler) ValidateToken(ctx context.Context, req *pb.Token) (*pb.Token, error) {
 	claims, err := s.tokenService.Decode(req.Token)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if claims.User.Id == "" {
-		return errors.New("invalid user")
+		return nil, errors.New("invalid user")
 	}
 
-	res.Valid = true
-	return nil
+	return &pb.Token{Valid: true}, nil
 }
+*/

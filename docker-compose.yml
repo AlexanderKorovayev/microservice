@@ -78,8 +78,13 @@ services:
     build: ./shippy-service-user
     ports:
       - 50053:50053
-    environment:
-      MICRO_ADDRESS: ":50053"
+    networks:
+      - my_network
+
+  cli:
+    build: ./shippy-user-cli
+    depends_on:
+      - user
     networks:
       - my_network
   

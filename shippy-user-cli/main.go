@@ -6,47 +6,36 @@ import (
 	"log"
 
 	proto "github.com/AlexanderKorovayev/microservice/shippy-service-user/proto/user"
-	"github.com/micro/cli/v2"
-	"github.com/micro/go-micro/v2"
+	"google.golang.org/grpc"
 )
 
-func createUser(ctx context.Context, service micro.Service, user *proto.User) error {
-	client := proto.NewUserService("shippy.service.user", service.Client())
-	rsp, err := client.Create(ctx, user)
+const (
+	address = "127.0.0.1:50053" //"host.docker.internal:50053" 127.0.0.1:50053 user:50053
+)
+
+func main() {
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
-		return err
+		log.Fatalf("Did not connect: %v", err)
+	}
+	defer conn.Close()
+	client := proto.NewUserServiceClient(conn)
+
+	ctx := context.Background()
+	user := &proto.User{
+		Name:     "name",
+		Email:    "email",
+		Company:  "company",
+		Password: "password",
+	}
+
+	rsp, err := client.Create(ctx, user)
+
+	if err != nil {
+		log.Println(err)
 	}
 
 	// print the response
 	fmt.Println("Response: ", rsp.User)
-
-	return nil
-}
-
-func main() {
-	// create and initialise a new service
-	service := micro.NewService()
-	service.Init(
-		micro.Action(func(c *cli.Context) error {
-			name := c.String("name")
-			email := c.String("email")
-			company := c.String("company")
-			password := c.String("password")
-
-			ctx := context.Background()
-			user := &proto.User{
-				Name:     name,
-				Email:    email,
-				Company:  company,
-				Password: password,
-			}
-
-			if err := createUser(ctx, service, user); err != nil {
-				log.Println("error creating user: ", err.Error())
-				return err
-			}
-
-			return nil
-		}),
-	)
 }
