@@ -10,10 +10,10 @@ import (
 func CreateConnection() (*gorm.DB, error) {
 
 	// Get database details from environment variables
-	host := "127.0.0.1:5432" // тут надо будет походу тоже использовать мостик докера и прописать просто database:5432
-	db_name := "microservice"
+	host := "127.0.0.1:7432" // тут надо будет походу тоже использовать мостик докера и прописать просто database:5432
 	user := "postgres"
 	password := "postgres"
+	db_name := "microservice"
 
 	return gorm.Open(
 		"postgres",
