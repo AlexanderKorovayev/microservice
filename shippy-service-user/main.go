@@ -25,6 +25,7 @@ func main() {
 	// Creates a database connection and handles
 	// closing it again before exit.
 	db, err := core.CreateConnection()
+
 	defer db.Close()
 
 	if err != nil {
@@ -37,7 +38,7 @@ func main() {
 	// this service is restarted.
 	db.AutoMigrate(&pb.User{})
 
-	repo := core.NewPostgresRepository(&db) //надо понять, какой репозиторий нам нужен
+	repo := core.NewPostgresRepository(&db)
 	//tokenService := &core.TokenService{repo}
 
 	pb.RegisterUserServiceServer(s, &core.Handler{repo, pb.UnimplementedUserServiceServer{}})

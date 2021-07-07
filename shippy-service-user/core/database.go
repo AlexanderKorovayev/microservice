@@ -15,11 +15,12 @@ func CreateConnection() (*gorm.DB, error) {
 	password := "postgres"
 	dbName := "microservice"
 
-	return gorm.Open(
+	db, err := gorm.Open(
 		"postgres",
 		fmt.Sprintf(
 			"host=%s user=%s dbname=%s sslmode=disable password=%s",
 			host, user, dbName, password,
 		),
 	)
+	return db, err
 }

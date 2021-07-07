@@ -13,12 +13,13 @@ type authable interface {
 }
 
 type Handler struct {
-	repository Repository
+	Repository
 	//tokenService authable
+	pb.UnimplementedUserServiceServer
 }
 
 func (s *Handler) Get(ctx context.Context, req *pb.User) (*pb.Response, error) {
-	result, err := s.repository.Get(ctx, req.Id)
+	result, err := s.Repository.Get(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +30,7 @@ func (s *Handler) Get(ctx context.Context, req *pb.User) (*pb.Response, error) {
 }
 
 func (s *Handler) GetAll(ctx context.Context, req *pb.Request) (*pb.Response, error) {
-	results, err := s.repository.GetAll(ctx)
+	results, err := s.Repository.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +42,7 @@ func (s *Handler) GetAll(ctx context.Context, req *pb.Request) (*pb.Response, er
 
 /*
 func (s *Handler) Auth(ctx context.Context, req *pb.User) (*pb.Token, error) {
-	user, err := s.repository.GetByEmail(ctx, req.Email)
+	user, err := s.Repository.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +67,7 @@ func (s *Handler) Create(ctx context.Context, req *pb.User) (*pb.Response, error
 	}
 
 	req.Password = string(hashedPass)
-	if err := s.repository.Create(ctx, MarshalUser(req)); err != nil {
+	if err := s.Repository.Create(ctx, MarshalUser(req)); err != nil {
 		return nil, err
 	}
 

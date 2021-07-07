@@ -4,7 +4,7 @@ import (
 	"context"
 
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-user/proto/user"
-	"github.com/jmoiron/sqlx"
+	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -24,10 +24,10 @@ type Repository interface {
 }
 
 type PostgresRepository struct {
-	db *sqlx.DB
+	db *gorm.DB
 }
 
-func NewPostgresRepository(db *sqlx.DB) *PostgresRepository {
+func NewPostgresRepository(db *gorm.DB) *PostgresRepository {
 	return &PostgresRepository{db}
 }
 
@@ -87,8 +87,7 @@ func (r *PostgresRepository) Get(ctx context.Context, id string) (*User, error) 
 
 func (r *PostgresRepository) Create(ctx context.Context, user *User) error {
 	user.ID = uuid.NewV4().String()
-	query := "insert into users (id, name, email, company, password) values ($1, $2, $3, $4, $5)"
-	_, err := r.db.ExecContext(ctx, query, user.ID, user.Name, user.Email, user.Company, user.Password)
+	err := r.db.Create(user)
 	return err
 }
 
