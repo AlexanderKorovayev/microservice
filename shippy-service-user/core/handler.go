@@ -8,7 +8,7 @@ import (
 )
 
 type authable interface {
-	Decode(token string) (*CustomClaims, error)
+	//Decode(token string) (*CustomClaims, error)
 	Encode(user *pb.User) (string, error)
 }
 
@@ -72,7 +72,6 @@ func (s *Handler) Create(ctx context.Context, req *pb.User) (*pb.Response, error
 
 	// Strip the password back out, so's we're not returning it
 	req.Password = ""
-	res.User = req
 
 	return &pb.Response{User: req}, nil
 }

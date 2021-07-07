@@ -13,13 +13,13 @@ func CreateConnection() (*gorm.DB, error) {
 	host := "127.0.0.1:7432" // тут надо будет походу тоже использовать мостик докера и прописать просто database:5432
 	user := "postgres"
 	password := "postgres"
-	db_name := "microservice"
+	dbName := "microservice"
 
 	return gorm.Open(
 		"postgres",
 		fmt.Sprintf(
 			"host=%s user=%s dbname=%s sslmode=disable password=%s",
-			host, user, db_name, password,
+			host, user, dbName, password,
 		),
 	)
 }
