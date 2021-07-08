@@ -26,8 +26,6 @@ func main() {
 	// closing it again before exit.
 	db, err := core.CreateConnection()
 
-	defer db.Close()
-
 	if err != nil {
 		log.Fatalf("Could not connect to DB: %v", err)
 	}
@@ -38,7 +36,7 @@ func main() {
 	// this service is restarted.
 	db.AutoMigrate(&pb.User{})
 
-	repo := core.NewPostgresRepository(&db)
+	repo := core.NewPostgresRepository(db)
 	//tokenService := &core.TokenService{repo}
 
 	pb.RegisterUserServiceServer(s, &core.Handler{repo, pb.UnimplementedUserServiceServer{}})

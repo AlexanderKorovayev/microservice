@@ -3,6 +3,7 @@ module github.com/AlexanderKorovayev/microservice/shippy-user-cli
 go 1.15
 
 require (
+	github.com/AlexanderKorovayev/microservice/shippy-service-user v0.0.0-20210707150707-e8f954b91b8a // indirect
 	github.com/Microsoft/go-winio v0.5.0 // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20210705153151-cc34b1f6908b // indirect
 	github.com/coreos/etcd v3.3.25+incompatible // indirect

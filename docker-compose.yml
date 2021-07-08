@@ -18,7 +18,7 @@
 # 4) docker exec -it web sh - посомтреть что в контейнере
 #    docker-compose up/down запуск или остановка микросервисов
 # 5) старт постгреса
-#    docker run --name postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=microservice  -p 5432:5432 postgres
+#    docker run --name postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=microservice  -p 7432:5432 postgres
 #
 version: '3.5'
 

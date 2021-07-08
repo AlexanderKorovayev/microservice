@@ -2,10 +2,11 @@ package core
 
 import (
 	"context"
+	"log"
 
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-user/proto/user"
-	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -69,8 +70,11 @@ func UnmarshalUser(user *User) *pb.User {
 
 func (r *PostgresRepository) GetAll(ctx context.Context) ([]*User, error) {
 	users := make([]*User, 0)
-	if err := r.db.GetContext(ctx, users, "select * from users"); err != nil {
-		return users, err
+	result := r.db.Find(users)
+	if result.Error != nil {
+		log.Println("Error for get user")
+		log.Println(result.Error)
+		return nil, result.Error
 	}
 
 	return users, nil
@@ -78,24 +82,33 @@ func (r *PostgresRepository) GetAll(ctx context.Context) ([]*User, error) {
 
 func (r *PostgresRepository) Get(ctx context.Context, id string) (*User, error) {
 	var user *User
-	if err := r.db.GetContext(ctx, &user, "select * from users where id = $1", id); err != nil {
-		return nil, err
+	result := r.db.First(user, "id = ?", id)
+	if result.Error != nil {
+		log.Println("Error for get user")
+		log.Println(result.Error)
+		return nil, result.Error
 	}
-
 	return user, nil
 }
 
 func (r *PostgresRepository) Create(ctx context.Context, user *User) error {
 	user.ID = uuid.NewV4().String()
-	err := r.db.Create(user)
-	return err
+	result := r.db.Create(user)
+	if result.Error != nil {
+		log.Println("Error for get user")
+		log.Println(result.Error)
+		return result.Error
+	}
+	return nil
 }
 
 func (r *PostgresRepository) GetByEmail(ctx context.Context, email string) (*User, error) {
-	query := "select * from users where email = $1"
 	var user *User
-	if err := r.db.GetContext(ctx, &user, query, email); err != nil {
-		return nil, err
+	result := r.db.First(user, "email = ?", email)
+	if result.Error != nil {
+		log.Println("Error for get by email")
+		log.Println(result.Error)
+		return nil, result.Error
 	}
 	return user, nil
 }
