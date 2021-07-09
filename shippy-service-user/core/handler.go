@@ -7,14 +7,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type authable interface {
-	//Decode(token string) (*CustomClaims, error)
-	Encode(user *pb.User) (string, error)
-}
-
 type Handler struct {
 	Repository
-	//tokenService authable
+	tokenService Authable
 	pb.UnimplementedUserServiceServer
 }
 
@@ -40,7 +35,6 @@ func (s *Handler) GetAll(ctx context.Context, req *pb.Request) (*pb.Response, er
 	return &pb.Response{Users: users}, nil
 }
 
-/*
 func (s *Handler) Auth(ctx context.Context, req *pb.User) (*pb.Token, error) {
 	user, err := s.Repository.GetByEmail(ctx, req.Email)
 	if err != nil {
@@ -58,7 +52,6 @@ func (s *Handler) Auth(ctx context.Context, req *pb.User) (*pb.Token, error) {
 
 	return &pb.Token{Token: token}, nil
 }
-*/
 
 func (s *Handler) Create(ctx context.Context, req *pb.User) (*pb.Response, error) {
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
