@@ -69,15 +69,18 @@ func UnmarshalUser(user *User) *pb.User {
 }
 
 func (r *PostgresRepository) GetAll(ctx context.Context) ([]*User, error) {
-	users := make([]*User, 0)
+	users1 := make([]*User, 0)
+	var users []User
+	log.Println("IN")
 	result := r.db.Find(users)
+	log.Println(result)
 	if result.Error != nil {
 		log.Println("Error for get user")
 		log.Println(result.Error)
 		return nil, result.Error
 	}
 
-	return users, nil
+	return users1, nil
 }
 
 func (r *PostgresRepository) Get(ctx context.Context, id string) (*User, error) {
