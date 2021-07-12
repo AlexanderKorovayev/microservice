@@ -29,7 +29,6 @@ func (s *Handler) GetAll(ctx context.Context, req *pb.Request) (*pb.Response, er
 	if err != nil {
 		return nil, err
 	}
-
 	users := UnmarshalUserCollection(results)
 
 	return &pb.Response{Users: users}, nil

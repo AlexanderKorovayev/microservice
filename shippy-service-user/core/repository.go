@@ -51,7 +51,7 @@ func MarshalUser(user *pb.User) *User {
 }
 
 func UnmarshalUserCollection(users []*User) []*pb.User {
-	u := make([]*pb.User, len(users))
+	u := make([]*pb.User, 0)
 	for _, val := range users {
 		u = append(u, UnmarshalUser(val))
 	}
@@ -71,15 +71,13 @@ func UnmarshalUser(user *User) *pb.User {
 func (r *PostgresRepository) GetAll(ctx context.Context) ([]*User, error) {
 	users1 := make([]*User, 0)
 	var users []User
-	log.Println("IN")
-	result := r.db.Find(users)
-	log.Println(result)
+	result := r.db.Find(&users)
 	if result.Error != nil {
-		log.Println("Error for get user")
-		log.Println(result.Error)
 		return nil, result.Error
 	}
-
+	for _, el := range users {
+		users1 = append(users1, &el)
+	}
 	return users1, nil
 }
 

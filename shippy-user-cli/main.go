@@ -36,7 +36,7 @@ func main() {
 		log.Println(err)
 	}
 	// print the response
-	fmt.Println("created: ", rsp.User.Id)
+	fmt.Println("created", rsp.User)
 
 	getAll, err := client.GetAll(context.Background(), &proto.Request{})
 	if err != nil {
