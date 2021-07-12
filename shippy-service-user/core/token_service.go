@@ -13,6 +13,11 @@ var (
 	key = []byte("SecretKey")
 )
 
+type Authable interface {
+	Decode(token string) (*CustomClaims, error)
+	Encode(user *pb.User) (string, error)
+}
+
 // CustomClaims is our custom metadata, which will be hashed
 // and sent as the second segment in our JWT
 type CustomClaims struct {
@@ -21,7 +26,7 @@ type CustomClaims struct {
 }
 
 type TokenService struct {
-	repo Repository
+	Repo Repository
 }
 
 // Decode a token string into a token object

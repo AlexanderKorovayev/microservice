@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"os"
 
 	proto "github.com/AlexanderKorovayev/microservice/shippy-service-user/proto/user"
 	"google.golang.org/grpc"
@@ -21,44 +21,44 @@ func main() {
 	}
 	defer conn.Close()
 	client := proto.NewUserServiceClient(conn)
-
-	ctx := context.Background()
-	user := &proto.User{
-		Id:       "1", //id можно и не передовать он там потом сам проставляется и пишется в базу, но не возвращается в этот объект, почему?
-		Name:     "name",
-		Email:    "email",
-		Company:  "company",
-		Password: "password",
-	}
-
-	rsp, err := client.Create(ctx, user)
-	if err != nil {
-		log.Println(err)
-	}
-	// print the response
-	fmt.Println("created", rsp.User)
-
-	getAll, err := client.GetAll(context.Background(), &proto.Request{})
-	if err != nil {
-		log.Fatalf("Could not list users: %v", err)
-	}
-	for _, v := range getAll.Users {
-		log.Println(v)
-	}
-
 	/*
-		authResponse, err := client.Auth(context.TODO(), &proto.User{
+		ctx := context.Background()
+		user := &proto.User{
+			Name:     "name",
 			Email:    "email",
+			Company:  "company",
 			Password: "password",
-		})
-
-		if err != nil {
-			log.Fatalf("Could not authenticate user: %s error: %v\n", "email", err)
 		}
-
-		log.Printf("Your access token is: %s \n", authResponse.Token)
-
-		// let's just exit because
-		os.Exit(0)
 	*/
+	/*
+		rsp, err := client.Create(ctx, user)
+		if err != nil {
+			log.Println(err)
+		}
+		// print the response
+		fmt.Println("created", rsp.User)
+	*/
+	/*
+		getAll, err := client.GetAll(context.Background(), &proto.Request{})
+		if err != nil {
+			log.Fatalf("Could not list users: %v", err)
+		}
+		for _, v := range getAll.Users {
+			log.Println(v)
+		}
+	*/
+	authResponse, err := client.Auth(context.TODO(), &proto.User{
+		Email:    "email",
+		Password: "password",
+	})
+
+	if err != nil {
+		log.Fatalf("Could not authenticate user: %s error: %v\n", "email", err)
+	}
+
+	log.Printf("Your access token is: %s \n", authResponse.Token)
+
+	// let's just exit because
+	os.Exit(0)
+
 }

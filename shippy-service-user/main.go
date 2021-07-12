@@ -37,9 +37,9 @@ func main() {
 	db.AutoMigrate(&pb.User{})
 
 	repo := core.NewPostgresRepository(db)
-	//tokenService := &core.TokenService{repo}
+	tokenService := core.TokenService{repo}
 
-	pb.RegisterUserServiceServer(s, &core.Handler{repo, pb.UnimplementedUserServiceServer{}})
+	pb.RegisterUserServiceServer(s, &core.Handler{tokenService, pb.UnimplementedUserServiceServer{}})
 
 	log.Println("Running on port:", port)
 	if err := s.Serve(lis); err != nil {
