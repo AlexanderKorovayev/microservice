@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"errors"
 	"log"
 
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-user/proto/user"
@@ -76,10 +75,11 @@ func (s *Handler) ValidateToken(ctx context.Context, req *pb.Token) (*pb.Token, 
 	if err != nil {
 		return nil, err
 	}
-
-	if claims.User.Id == "" {
-		return nil, errors.New("invalid user")
-	}
-
+	// проверка не работает
+	/*
+		if claims.User.Id == "" {
+			return nil, errors.New("invalid user")
+		}
+	*/
 	return &pb.Token{Valid: true}, nil
 }

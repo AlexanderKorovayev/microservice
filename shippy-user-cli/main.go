@@ -44,7 +44,6 @@ func main() {
 	for _, v := range getAll.Users {
 		log.Println(v)
 	}
-
 	/*
 		authResponse, err := client.Auth(context.TODO(), &proto.User{
 			Email:    "email",
@@ -57,13 +56,13 @@ func main() {
 
 		log.Printf("Your access token is: %s \n", authResponse.Token)
 	*/
-
 	// secret token is
 	//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyIjp7ImVtYWlsIjoiZW1haWwiLCJwYXNzd29yZCI6InBhc3N3b3JkIn0sImV4cCI6MTUwMDAsImlzcyI6Im1pY3Jvc2VydmljZS5zZXJ2aWNlLnVzZXIifQ.VjwVUwg687y-ztrpw7fiuvFvo1h_4nn2bK3hep7cx0A
 
 	//https://pkg.go.dev/github.com/dgrijalva/jwt-go#StandardClaims.VerifyIssuer
 	//https://stackoverflow.com/questions/61281636/how-to-access-jwt-sub-claims-using-go
 	//надо разобраться почему не происходит раскодирование токена
+
 	validateResponse, err := client.ValidateToken(context.Background(),
 		&proto.Token{Token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyIjp7ImVtYWlsIjoiZW1haWwiLCJwYXNzd29yZCI6InBhc3N3b3JkIn0sImV4cCI6MTUwMDB9.E7qfTlNFGT6lfNFJAX6pOtHtbTzSyaSGFWc5TJbod6E"})
 

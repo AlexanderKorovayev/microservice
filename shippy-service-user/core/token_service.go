@@ -43,14 +43,19 @@ func (srv *TokenService) Decode(token string) (*CustomClaims, error) {
 	tokenType, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		return []byte(key), nil
 	})
-	log.Println(tokenType)
-	log.Println(err)
+
+	claims := tokenType.Claims.(jwt.MapClaims)
+	log.Println(claims)
 	// Validate the token and return the custom claims
-	if claims, ok := tokenType.Claims.(*CustomClaims); ok && tokenType.Valid {
-		return claims, nil
-	} else {
-		return nil, err
-	}
+	// проверка не работает
+	/*
+		if claims, ok := tokenType.Claims.(*CustomClaims); ok && tokenType.Valid {
+			return claims, nil
+		} else {
+			return nil, err
+		}
+	*/
+	return claims, err
 }
 
 // Encode a claim into a JWT
@@ -59,7 +64,7 @@ func (srv *TokenService) Encode(user *pb.User) (string, error) {
 	claims := CustomClaims{
 		user,
 		jwt.StandardClaims{
-			ExpiresAt: 15000,
+			ExpiresAt: 150000,
 			//Issuer:    "microservice.service.user",
 		},
 	}
