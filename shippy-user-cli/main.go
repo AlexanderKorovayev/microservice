@@ -29,8 +29,7 @@ func main() {
 			Company:  "company",
 			Password: "password",
 		}
-	*/
-	/*
+
 		rsp, err := client.Create(ctx, user)
 		if err != nil {
 			log.Println(err)
@@ -38,15 +37,14 @@ func main() {
 		// print the response
 		fmt.Println("created", rsp.User)
 	*/
-	/*
-		getAll, err := client.GetAll(context.Background(), &proto.Request{})
-		if err != nil {
-			log.Fatalf("Could not list users: %v", err)
-		}
-		for _, v := range getAll.Users {
-			log.Println(v)
-		}
-	*/
+	getAll, err := client.GetAll(context.Background(), &proto.Request{})
+	if err != nil {
+		log.Fatalf("Could not list users: %v", err)
+	}
+	for _, v := range getAll.Users {
+		log.Println(v)
+	}
+
 	authResponse, err := client.Auth(context.TODO(), &proto.User{
 		Email:    "email",
 		Password: "password",

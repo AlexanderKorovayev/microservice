@@ -105,11 +105,15 @@ func (r *PostgresRepository) Create(ctx context.Context, user *User) error {
 
 func (r *PostgresRepository) GetByEmail(ctx context.Context, email string) (*User, error) {
 	var user *User
-	result := r.db.First(user, "email = ?", email)
+	var user1 User
+	result := r.db.First(&user1, "email = ?", email)
+	log.Println(result)
+	log.Println(user1)
 	if result.Error != nil {
 		log.Println("Error for get by email")
 		log.Println(result.Error)
 		return nil, result.Error
 	}
+
 	return user, nil
 }
