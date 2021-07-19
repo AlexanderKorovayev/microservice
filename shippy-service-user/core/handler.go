@@ -37,8 +37,6 @@ func (s *Handler) GetAll(ctx context.Context, req *pb.Request) (*pb.Response, er
 
 func (s *Handler) Auth(ctx context.Context, req *pb.User) (*pb.Token, error) {
 	user, err := s.TokenSrv.Repo.GetByEmail(ctx, req.Email)
-	log.Println(user)
-	log.Println(err)
 	if err != nil {
 		return nil, err
 	}
@@ -74,6 +72,7 @@ func (s *Handler) Create(ctx context.Context, req *pb.User) (*pb.Response, error
 
 func (s *Handler) ValidateToken(ctx context.Context, req *pb.Token) (*pb.Token, error) {
 	claims, err := s.TokenSrv.Decode(req.Token)
+	log.Println(claims)
 	if err != nil {
 		return nil, err
 	}

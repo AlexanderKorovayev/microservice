@@ -1,6 +1,8 @@
 package core
 
 import (
+	"log"
+
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-user/proto/user"
 	"github.com/dgrijalva/jwt-go"
 )
@@ -31,12 +33,18 @@ type TokenService struct {
 
 // Decode a token string into a token object
 func (srv *TokenService) Decode(token string) (*CustomClaims, error) {
-
+	log.Println(token)
 	// Parse the token
-	tokenType, err := jwt.ParseWithClaims(string(key), &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return key, nil
+	/*
+		tokenType, err := jwt.ParseWithClaims(string(key), &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+			return key, nil
+		})
+	*/
+	tokenType, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		return []byte(key), nil
 	})
-
+	log.Println(tokenType)
+	log.Println(err)
 	// Validate the token and return the custom claims
 	if claims, ok := tokenType.Claims.(*CustomClaims); ok && tokenType.Valid {
 		return claims, nil
@@ -52,7 +60,7 @@ func (srv *TokenService) Encode(user *pb.User) (string, error) {
 		user,
 		jwt.StandardClaims{
 			ExpiresAt: 15000,
-			Issuer:    "microservice.service.user",
+			//Issuer:    "microservice.service.user",
 		},
 	}
 

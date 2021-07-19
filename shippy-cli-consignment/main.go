@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"os"
 
 	pb "github.com/AlexanderKorovayev/microservice/shippy-service-consignment/proto/consignment"
 	"google.golang.org/grpc"
@@ -15,6 +14,7 @@ import (
 const (
 	address         = "consignment:50051" //"host.docker.internal:50051" 127.0.0.1:50051 consignment:50051
 	defaultFilename = "consignment.json"
+	token           = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyIjp7ImVtYWlsIjoiZW1haWwiLCJwYXNzd29yZCI6InBhc3N3b3JkIn0sImV4cCI6MTUwMDAsImlzcyI6Im1pY3Jvc2VydmljZS5zZXJ2aWNlLnVzZXIifQ.VjwVUwg687y-ztrpw7fiuvFvo1h_4nn2bK3hep7cx0A"
 )
 
 func parseFile(file string) (*pb.Consignment, error) {
@@ -38,22 +38,23 @@ func main() {
 
 	// Contact the server and print out its response.
 	file := defaultFilename
-	if len(os.Args) > 1 {
-		file = os.Args[1]
-	}
+
+	ctx := metadata.NewContext(context.Background(), map[string]string{
+		"token": token,
+	})
 
 	consignment, err := parseFile(file)
 
 	if err != nil {
 		log.Fatalf("Could not parse file: %v", err)
 	}
-	r, err := client.CreateConsignment(context.Background(), consignment)
+	r, err := client.CreateConsignment(ctx, consignment)
 	if err != nil {
 		log.Fatalf("Could not greet: %v", err)
 	}
 	log.Printf("Created: %t", r.Created)
 
-	getAll, err := client.GetConsignments(context.Background(), &pb.GetRequest{})
+	getAll, err := client.GetConsignments(ctx, &pb.GetRequest{})
 	if err != nil {
 		log.Fatalf("Could not list consignments: %v", err)
 	}

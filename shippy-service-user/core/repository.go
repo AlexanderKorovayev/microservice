@@ -82,14 +82,14 @@ func (r *PostgresRepository) GetAll(ctx context.Context) ([]*User, error) {
 }
 
 func (r *PostgresRepository) Get(ctx context.Context, id string) (*User, error) {
-	var user *User
-	result := r.db.First(user, "id = ?", id)
+	var user User
+	result := r.db.First(&user, "id = ?", id)
 	if result.Error != nil {
 		log.Println("Error for get user")
 		log.Println(result.Error)
 		return nil, result.Error
 	}
-	return user, nil
+	return &user, nil
 }
 
 func (r *PostgresRepository) Create(ctx context.Context, user *User) error {
@@ -104,16 +104,14 @@ func (r *PostgresRepository) Create(ctx context.Context, user *User) error {
 }
 
 func (r *PostgresRepository) GetByEmail(ctx context.Context, email string) (*User, error) {
-	var user *User
-	var user1 User
-	result := r.db.First(&user1, "email = ?", email)
-	log.Println(result)
-	log.Println(user1)
+	//var user *User
+	var user User
+	result := r.db.First(&user, "email = ?", email)
 	if result.Error != nil {
 		log.Println("Error for get by email")
 		log.Println(result.Error)
 		return nil, result.Error
 	}
 
-	return user, nil
+	return &user, nil
 }
