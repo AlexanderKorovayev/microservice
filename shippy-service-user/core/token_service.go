@@ -32,7 +32,7 @@ type TokenService struct {
 }
 
 // Decode a token string into a token object
-func (srv *TokenService) Decode(token string) (*CustomClaims, error) {
+func (srv *TokenService) Decode(token string) (*jwt.MapClaims, error) { //(*CustomClaims, error) {
 	log.Println(token)
 	// Parse the token
 	/*
@@ -55,7 +55,7 @@ func (srv *TokenService) Decode(token string) (*CustomClaims, error) {
 			return nil, err
 		}
 	*/
-	return claims, err
+	return &claims, err
 }
 
 // Encode a claim into a JWT

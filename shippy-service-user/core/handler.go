@@ -70,11 +70,13 @@ func (s *Handler) Create(ctx context.Context, req *pb.User) (*pb.Response, error
 }
 
 func (s *Handler) ValidateToken(ctx context.Context, req *pb.Token) (*pb.Token, error) {
-	claims, err := s.TokenSrv.Decode(req.Token)
+	claims, _ := s.TokenSrv.Decode(req.Token)
 	log.Println(claims)
-	if err != nil {
-		return nil, err
-	}
+	/*
+		if err != nil {
+			return nil, err
+		}
+	*/
 	// проверка не работает
 	/*
 		if claims.User.Id == "" {
